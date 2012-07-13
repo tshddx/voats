@@ -1,10 +1,9 @@
 Voats::Application.routes.draw do
-  root :to => "home#index"
+  resources :polls, :only => [:update, :new, :create, :show], :path => '', :path_names => {:new => ''} do
+    resources :poll_options, :only => [ :create, :delete ]
+    resources :vote, :only => [ :create, :delete ]
+  end
 
-  resources :polls
-  resources :votes
-  resources :poll_options
-  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

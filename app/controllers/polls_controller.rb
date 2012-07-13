@@ -16,4 +16,7 @@ class PollsController < ApplicationController
     Poll.find(params[:id]).destroy
     render :json => {:success => true}
   end
+
+  def new
+  end  
 end
