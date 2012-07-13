@@ -1,5 +1,5 @@
 Voats::Application.routes.draw do
-  resources :poll, :only => [:update, :new, :create, :show], :path => '', :path_names => {:new => ''} do
+  resources :polls, :only => [:update, :new, :create, :show], :path => '', :path_names => {:new => ''} do
     resources :poll_option, :only => [ :create ]
     resources :vote, :only => [ :create ]
   end
