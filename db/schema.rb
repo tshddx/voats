@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120713204151) do
+ActiveRecord::Schema.define(:version => 20120713204754) do
 
   create_table "poll_options", :force => true do |t|
     t.integer  "user_id"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20120713204151) do
     t.integer  "votes_per_user"
     t.integer  "votes_per_poll_option"
     t.datetime "ended_at"
+    t.string   "title"
   end
 
   create_table "users", :force => true do |t|
