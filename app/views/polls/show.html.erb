@@ -1,14 +1,17 @@
 <div class="container">
-  <h1>What are we voting on?<i></i></h1>
+  <h1><%= @poll.title %></h1>
 
   <ul class="unstyled">
-    <li>Something about whatever</li>
-    <li>Another thing</li>
-    <li>This too</li>
+    <% @poll.poll_options.each do |option| %>
+      <li><strong><%= option.title %></strong>. <%= option.description %></li>
+    <% end %>
+    <% if @poll.poll_options.empty? %>
+      <li><em>No poll options yet. Add one.</em></li>
+    <% end %>
     <li><input type="text" placeholder="add option"></i></li>
   </ul>
 
-  <h2>X people have cast Y votes (they have Z votes remaning)</h2>
+  <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
 
   <a href="#" class="btn btn-primary">end now</a>
 
