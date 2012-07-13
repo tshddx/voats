@@ -1,11 +1,7 @@
-class PollsController < ApplicationController
-  def index
-    @polls = Poll.all
-  end
-
+class PollOptionsController < ApplicationController
   def create
-    @poll = Poll.new(params[:poll])
-    if @poll.save
+    @poll_option = PollOption.new(params[:poll_option])
+    if @poll_option.save
       render :json => {:success => true}
     else
       render :json => {:error => true}
@@ -13,7 +9,7 @@ class PollsController < ApplicationController
   end
 
   def delete
-    Poll.find(params[:id]).destroy
+    PollOption.find(params[:id]).destroy
     render :json => {:success => true}
   end
 end
