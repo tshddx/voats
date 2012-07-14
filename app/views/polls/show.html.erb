@@ -1,9 +1,24 @@
 <div class="container">
   <h1><%= @poll.title %></h1>
 
+  <div>
+    you have
+    <span id="votes-remaining" style="font-size: 225%; font-weight: bold; color: #33cc33;">
+      <%= @poll.votes_remaining(@user) %>
+    </span>
+    votes remaining
+  </div>
+  
   <ul class="unstyled" id="poll-options">
     <% @poll.poll_options.each do |option| %>
-      <li><%= option.description %></li>
+      <li style="padding: 4px;">
+        <span class="num" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
+          0
+        </span>
+        <a href="#" id="vote-<%= option.id %>" class="btn vote-button">Vote +1</a>
+        <a href="#" id="unvote-<%= option.id %>" class="btn disabled unvote-button">-1</a>
+        <%= option.description %>
+      </li>
     <% end %>
     <% if @poll.poll_options.empty? %>
       <li><em>No poll options yet. Add one.</em></li>
@@ -45,6 +60,64 @@
 
 <script type="text/javascript">
   $(function() {
+    var votesRemaining = $("#votes-remaining");
+
+    $(".vote-button").live("click", function() {
+      var numRemaining = parseInt(votesRemaining.text(), 10);
+      if (numRemaining === 0) {
+        return false;
+      }
+  
+      var el = $(this);
+      var numEl = el.siblings(".num").first();
+      var num = parseInt(numEl.text(), 10);
+      num += 1;
+      numEl.text(parseInt(num));
+      numEl.css({ opacity: 1.0 });
+      numEl.show();
+
+      var unvoteEl = el.siblings(".unvote-button").first();
+      unvoteEl.removeClass("disabled");
+
+      numRemaining -= 1;
+      votesRemaining.text(numRemaining);
+      if (numRemaining === 0) {
+        console.log("disabling");
+        $(".vote-button").addClass("disabled");
+      }
+    });
+
+    $(".unvote-button").live("click", function() {
+      var numRemaining = parseInt(votesRemaining.text(), 10);
+  
+      var el = $(this);
+
+      if (el.hasClass("disabled")) {
+        return false;
+      }
+  
+      var numEl = el.siblings(".num").first();
+      var num = parseInt(numEl.text(), 10);
+      num -= 1;
+      console.log(num);
+
+      if (num === 0) {
+        numEl.css({ opacity: 0.0 });
+        el.addClass("disabled");
+      }
+      numEl.text(num);
+  
+      var voteEl = el.siblings(".vote-button").first();
+      voteEl.removeClass("disabled");
+
+      numRemaining += 1;
+      votesRemaining.text(numRemaining);
+      if (numRemaining !== 0) {
+        console.log("enabling");
+        $(".vote-button").removeClass("disabled");
+      }
+    });
+  
     var addLi = $("#add-li");
     var addButton = $("#add-option");
     var addText = $("#add-option-text");
@@ -53,7 +126,7 @@
       var option = addText.val();
       if (option.length !== 0) {
         console.log("submitting");
-        $.post("<%= poll_options_url %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function() {
+        $.post("<%= poll_poll_options_url(@poll) %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function() {
           console.log("wtf");
           addLi.remove();
           list.append($("<li>" + option + "</li>"));

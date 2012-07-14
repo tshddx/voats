@@ -14,7 +14,12 @@ class Poll < ActiveRecord::Base
     return Vote.find_by_sql("SELECT * FROM votes, poll_options ON votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} GROUP BY votes.id")
   end
 
-  def votes_remaining
-    return (self.votes_per_user * voters.count) - self.votes.count
+  def votes_remaining(user=nil)
+    if user.nil?
+      return (self.votes_per_user * voters.count) - self.votes.count
+    else
+      return self.votes_per_user - Vote.count_by_sql("SELECT COUNT(*) FROM votes, users, poll_options ON users.id = votes.user_id AND votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} AND users.id = #{user.id} GROUP BY votes.id")
+    end
   end
+
 end
