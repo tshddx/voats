@@ -1,14 +1,17 @@
 <div class="container">
   <h1><%= @poll.title %></h1>
 
-  <ul class="unstyled">
+  <ul class="unstyled" id="poll-options">
     <% @poll.poll_options.each do |option| %>
-      <li><strong><%= option.title %></strong>. <%= option.description %></li>
+      <li><%= option.description %></li>
     <% end %>
     <% if @poll.poll_options.empty? %>
       <li><em>No poll options yet. Add one.</em></li>
     <% end %>
-    <li><input type="text" placeholder="add option"></i></li>
+    <li id="add-li">
+      <input type="text" id="add-option-text" placeholder="add option"></input>
+      <a href="#" id="add-option" class="btn btn-primary">Add option</a>
+    </li>
   </ul>
 
   <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
@@ -39,3 +42,27 @@
   </div>
 
 </div>
+
+<script type="text/javascript">
+  $(function() {
+    var addLi = $("#add-li");
+    var addButton = $("#add-option");
+    var addText = $("#add-option-text");
+    var list = $("#poll-options");
+    addButton.live("click", function() {
+      var option = addText.val();
+      if (option.length !== 0) {
+        console.log("submitting");
+        $.post("<%= poll_options_url %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function() {
+          console.log("wtf");
+          addLi.remove();
+          list.append($("<li>" + option + "</li>"));
+          list.append(addLi);
+          addText.val("");
+          addText.focus();
+        });
+        console.log(option);
+      }
+    });
+  })
+</script>

@@ -4,5 +4,5 @@ class PollOption < ActiveRecord::Base
   belongs_to :poll
   belongs_to :user
   
-  validates :poll_id, :user_id, :presence => true
+  validates :poll_id, :user_id, :description, :presence => true
 end
