@@ -15,8 +15,8 @@
         <span class="num" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
           0
         </span>
-        <a href="#" id="vote-<%= option.id %>" class="btn vote-button">Vote +1</a>
-        <a href="#" id="unvote-<%= option.id %>" class="btn disabled unvote-button">-1</a>
+        <a href="#" id="vote-<%= option.id %>" class="btn vote-button">Vote</a>
+        <a href="#" id="unvote-<%= option.id %>" class="btn disabled unvote-button">-</a>
         <%= option.description %>
       </li>
     <% end %>
@@ -24,14 +24,15 @@
       <li><em>No poll options yet. Add one.</em></li>
     <% end %>
     <li id="add-li">
-      <input type="text" id="add-option-text" placeholder="add option"></input>
-      <a href="#" id="add-option" class="btn btn-primary">Add option</a>
+      <div class="input-append">
+        <input type="text" id="add-option-text" placeholder="add option"></input><button id="add-option" class="btn">Add option</button>
+      </div>
     </li>
   </ul>
 
-  <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
+  <button id="cast-vote" class="btn btn-primary">Cast Vote</button> <button id="end-now" class="btn btn-danger">end poll now</button>
 
-  <a href="#" class="btn btn-primary">end now</a>
+  <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
 
   <hr>
 

@@ -11,3 +11,29 @@
  *= require_self
  *= require_tree .
  */
+
+.progress {
+  height: 36px;
+}
+
+.progress .bar {
+  height: 36px;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: bold;
+}
+
+input[type=text] {
+  height: 24px;
+  line-height: 24px;
+  font-size: 24px;
+}
+
+button {
+  height: 34px;
+}
+
+.btn.disabled,
+.btn[disabled] {
+  opacity: 0.35;
+}
