@@ -10,15 +10,20 @@
         <option>3</option>
         <option>4</option>
       </select>
-      <select id="votes_per_user" name="votes_per_poll_option">
-        <option>votes per option per person</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-      </select>
       <input type="text" placeholder="poll title" name="title">
       <button type="submit" class="btn btn-primary btn-large">Start Poll</a>
     </form>
   </div>
+
+  <div>
+      <strong>Recent polls</strong>
+  <ul>
+    <% Poll.order("created_at DESC").each do |poll| %>
+      <li>
+        <%= link_to poll.title, poll %>
+      </li>
+    <% end %>
+  </ul>
+
+  </div> 
 </div>

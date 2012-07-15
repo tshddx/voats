@@ -3,4 +3,5 @@
   <% @polls.each do |poll| %>
     <li><%= image_tag poll.user.robohash(100) %><%= poll.title %> </li>
   <% end %>
+
 </ul>

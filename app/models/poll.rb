@@ -11,7 +11,7 @@ class Poll < ActiveRecord::Base
   end
 
   def votes
-    return Vote.find_by_sql("SELECT * FROM votes, poll_options ON votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} GROUP BY votes.id")
+    return Vote.find_by_sql("SELECT * FROM votes, poll_options ON votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i}")
   end
 
   def votes_remaining(user=nil)
@@ -20,6 +20,20 @@ class Poll < ActiveRecord::Base
     else
       return self.votes_per_user - Vote.count_by_sql("SELECT COUNT(*) FROM votes, users, poll_options ON votes.user_id = users.id AND votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} AND users.id = #{user.id}")
     end
+  end
+
+  def ranked_poll_options
+    sql = <<SQL
+SELECT poll_options.id, poll_options.description, COUNT(votes.id) AS vote_count
+FROM poll_options
+LEFT OUTER JOIN votes
+ON votes.poll_option_id = poll_options.id
+WHERE poll_options.poll_id = #{self.id.to_i}
+GROUP BY poll_options.id
+ORDER BY vote_count DESC;
+SQL
+
+    return PollOption.find_by_sql(sql)
   end
 
 end

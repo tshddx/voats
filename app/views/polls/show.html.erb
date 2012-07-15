@@ -1,6 +1,8 @@
 <div class="container">
   <h1><%= @poll.title %></h1>
 
+  <% if !@poll.ended_at.present? %>
+
   <div id="remaining">
     you have
     <span id="votes-remaining" style="font-size: 225%; font-weight: bold; color: #33cc33;">
@@ -39,30 +41,28 @@
     <% end %>
   </div>
 
+  <% end %>
+
+  
   <% if @poll.ended_at.present? %>
   
-  <hr>
-  
   <div class="results">
+  <p>Ended at <%= @poll.ended_at %></p>
 
   <h1>Results</h1>
-    <div class="progress progress-success" style="margin-bottom: 9px;">
-    <div class="bar" style="width: 60%"></div>
-  </div>
 
-  <div class="progress progress-info" style="margin-bottom: 9px;">
-    <div class="bar" style="width: 35%"></div>
-  </div>
+    <% max = @poll.ranked_poll_options.first.vote_count %>
+    <% @poll.ranked_poll_options.each_with_index do |option, i| %>
+      <% if i == 0 %>
+        <div class="progress progress-success" style="margin-bottom: 9px;">
+      <% else %>
+        <div class="progress progress-info" style="margin-bottom: 9px;">
+      <% end %>
+        <div class="bar" style="width: <%= option.vote_count.to_f / max * 100 %>%"><%= option.vote_count %> : <%= option.description %></div>
+        </div>
+      
 
-  <div class="progress progress-info" style="margin-bottom: 9px;">
-    <div class="bar" style="width: 20%"></div>
-  </div>
-
-  <div class="progress progress-info" style="margin-bottom: 9px;">
-    <div class="bar" style="width: 15%"></div>
-  </div>
-
-  </div>
+    <% end %>
 
   <% end %>
 
@@ -158,6 +158,12 @@
       console.log(data);
 
       $.post("<%= poll_votes_url(@poll) %>", data).done(function() {
+        window.location.reload();
+      });
+    });
+
+    $("#end-now").click(function() {
+      $.get("<%= poll_url(@poll) %>", {"end_now": true}).done(function() {
         window.location.reload();
       });
     });

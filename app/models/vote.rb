@@ -4,7 +4,7 @@ class Vote < ActiveRecord::Base
   belongs_to :poll_option
   belongs_to :user
 
-  validate :vote_counts
+  # validate :vote_counts
 
   def poll
     return self.poll_option.poll
