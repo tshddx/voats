@@ -1,7 +1,7 @@
 <div class="container">
   <h1><%= @poll.title %></h1>
 
-  <div>
+  <div id="remaining">
     you have
     <span id="votes-remaining" style="font-size: 225%; font-weight: bold; color: #33cc33;">
       <%= @poll.votes_remaining(@user) %>
@@ -30,7 +30,9 @@
     </li>
   </ul>
 
-  <button id="cast-vote" class="btn btn-primary">Cast Vote</button> <button id="end-now" class="btn btn-danger">end poll now</button>
+  <div id="vote-buttons">
+    <button id="cast-vote" class="btn btn-primary">Cast Vote</button> <button id="end-now" class="btn btn-danger">end poll now</button>
+  </div>
 
   <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
 
