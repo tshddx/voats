@@ -1,12 +1,14 @@
 class VotesController < ApplicationController
   
   def create
-    @vote = Vote.new(params[:vote])
-    if @vote.save
-      render :json => {:success => true}
-    else
-      render :json => {:error => true}
+    params["poll_options"].each do |id, votes|
+      votes.to_i.times do
+        v = Vote.create!(:poll_option_id => id, :user_id => @user.id)
+        puts "CREATED VOTE"
+        puts v.inspect
+      end
     end
+    render :json => {:success => true}
   end
 
   def delete

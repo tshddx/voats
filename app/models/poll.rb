@@ -18,7 +18,7 @@ class Poll < ActiveRecord::Base
     if user.nil?
       return (self.votes_per_user * voters.count) - self.votes.count
     else
-      return self.votes_per_user - Vote.count_by_sql("SELECT COUNT(*) FROM votes, users, poll_options ON users.id = votes.user_id AND votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} AND users.id = #{user.id} GROUP BY votes.id")
+      return self.votes_per_user - Vote.count_by_sql("SELECT COUNT(*) FROM votes, users, poll_options ON votes.user_id = users.id AND votes.poll_option_id = poll_options.id WHERE poll_options.poll_id = #{self.id.to_i} AND users.id = #{user.id}")
     end
   end
 

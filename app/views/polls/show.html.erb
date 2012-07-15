@@ -12,12 +12,14 @@
   <ul class="unstyled" id="poll-options">
     <% @poll.poll_options.each do |option| %>
       <li style="padding: 4px;">
-        <span class="num" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
+        <span class="num" data-id="<%= option.id %>" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
           0
         </span>
-        <a href="#" id="vote-<%= option.id %>" class="btn vote-button">Vote</a>
-        <a href="#" id="unvote-<%= option.id %>" class="btn disabled unvote-button">-</a>
-        <%= option.description %>
+        <span id="vote-<%= option.id %>" class="btn vote-button">Vote</span>
+        <span id="unvote-<%= option.id %>" class="btn disabled unvote-button">-</span>
+        <span class="description">
+          <%= option.description %>
+        </span>
       </li>
     <% end %>
     <% if @poll.poll_options.empty? %>
@@ -31,13 +33,16 @@
   </ul>
 
   <div id="vote-buttons">
-    <button id="cast-vote" class="btn btn-primary">Cast Vote</button> <button id="end-now" class="btn btn-danger">end poll now</button>
+    <button id="cast-vote" class="btn btn-primary<% if @poll.votes_remaining(@user) == 0 %> disabled<% end %>">Cast Vote</button>
+    <% if @poll.user == @user %>
+      <button id="end-now" class="btn btn-danger">end poll now</button>
+    <% end %>
   </div>
 
-  <h2><%= @poll.voters.count %> people have cast <%= @poll.votes.count %> votes (they have <%= @poll.votes_remaining %> votes remaning)</h2>
-
+  <% if @poll.ended_at.present? %>
+  
   <hr>
-
+  
   <div class="results">
 
   <h1>Results</h1>
@@ -59,6 +64,8 @@
 
   </div>
 
+  <% end %>
+
 </div>
 
 <script type="text/javascript">
@@ -79,6 +86,9 @@
       numEl.css({ opacity: 1.0 });
       numEl.show();
 
+      var description = el.siblings(".description").first();
+      description.addClass("selected");
+
       var unvoteEl = el.siblings(".unvote-button").first();
       unvoteEl.removeClass("disabled");
 
@@ -88,6 +98,8 @@
         console.log("disabling");
         $(".vote-button").addClass("disabled");
       }
+
+      return false;
     });
 
     $(".unvote-button").live("click", function() {
@@ -118,7 +130,36 @@
       if (numRemaining !== 0) {
         console.log("enabling");
         $(".vote-button").removeClass("disabled");
+        var description = el.siblings(".description").first();
+        description.removeClass("selected");
       }
+
+      return false;
+    });
+
+    $("#cast-vote").click(function() {
+      if ($(this).hasClass("disabled")) {
+        return false;
+      }
+      if (!confirm("Are you sure you want to submit this as your vote? NO UNDO!")) {
+        return false;
+      }
+
+      var data = {};
+  
+      $(".num").each(function(i, element) {
+        var el = $(element);
+        var id = el.data("id");
+        var votes = parseInt(el.text(), 10);
+
+        data["poll_options[" + id + "]"] = votes;
+      });
+  
+      console.log(data);
+
+      $.post("<%= poll_votes_url(@poll) %>", data).done(function() {
+        window.location.reload();
+      });
     });
   
     var addLi = $("#add-li");
@@ -132,7 +173,7 @@
         $.post("<%= poll_poll_options_url(@poll) %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function() {
           console.log("wtf");
           addLi.remove();
-          list.append($("<li>" + option + "</li>"));
+          list.append($("<li> <em>" + option + " (refresh to vote)" + "</em> </li>"));
           list.append(addLi);
           addText.val("");
           addText.focus();
