@@ -39,3 +39,5 @@ gem 'jquery-rails'
 # gem 'ruby-debug'
 
 gem 'uuidtools'
+
+gem 'thin'
