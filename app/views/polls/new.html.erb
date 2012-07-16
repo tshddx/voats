@@ -1,29 +1,59 @@
 <div class="container">
+
   <div class="hero-unit">
     <h1>Vote on something.</h1>
+    <h2>
+      <ul>
 
-    <form class="well form-inline" action="" method="post">
-      <select id="votes_per_user" name="votes_per_user">
-        <option>votes per person</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-      </select>
-      <input type="text" placeholder="poll title" name="title">
-      <button type="submit" class="btn btn-primary btn-large">Start Poll</a>
-    </form>
+      <% if Poll.all.empty? %>
+        <li><em>Nothing to vote on yet.</em></li>
+      <% end %>
+
+      <% Poll.order("created_at DESC").each do |poll| %>
+        <li>
+          <%= link_to poll.title, poll %>
+        </li>
+      <% end %>
+      </ul>
+    </h2>
   </div>
 
-  <div>
-      <strong>Recent polls</strong>
-  <ul>
-    <% Poll.order("created_at DESC").each do |poll| %>
-      <li>
-        <%= link_to poll.title, poll %>
-      </li>
-    <% end %>
-  </ul>
+  <div class="hero-unit">
+    <h1>Start a new poll.</h1>
+
+    <form class="form-horizontal" action="" method="post">
+      <fieldset>
+        <input class="input-xlarge span5" type="text" placeholder="What's the topic?" name="title">
+
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">More options?</a>
+        <div class="accordion-group">
+          <div style="height: 0px;" id="collapseOne" class="accordion-body collapse">
+            <div class="accordion-inner">
+
+              <div class="control-group">
+                <label class="control-label" for="votes_per_user">Votes per person?</label>
+                <div class="controls">
+                  <select id="votes_per_user" name="votes_per_user">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-large">Let's do it.</a>
+        </div>
+
+      </fieldset>
+    </form>
 
   </div> 
+
 </div>
