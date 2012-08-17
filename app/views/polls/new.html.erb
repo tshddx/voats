@@ -1,3 +1,15 @@
+<script>
+$(document).ready(function() {
+  $("#new-poll-form").submit(function(e) {
+    if ($("#title-input").val() == '') { 
+      console.log('bad input');
+      e.preventDefault();
+      return false;
+    }
+  });
+});
+</script>
+
 <div class="container">
 
   <div class="hero-unit">
@@ -21,9 +33,9 @@
   <div class="hero-unit">
     <h1>Start a new poll.</h1>
 
-    <form class="form-horizontal" action="" method="post">
+    <form id="new-poll-form" class="form-horizontal" action="" method="post">
       <fieldset>
-        <input class="input-xlarge span5" type="text" placeholder="What's the topic?" name="title">
+        <input class="input-xlarge span5" id="title-input" type="text" placeholder="What's the topic?" name="title">
 
         <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">More options?</a>
         <div class="accordion-group">

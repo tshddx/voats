@@ -4,7 +4,7 @@ class Poll < ActiveRecord::Base
   has_many :poll_options
   belongs_to :user
 
-  validates :user_id, :votes_per_user, :user_id, :presence => true
+  validates :title, :user_id, :votes_per_user, :user_id, :presence => true
 
   def voters
     return User.find_by_sql("SELECT * FROM users, votes, poll_options ON users.id = votes.user_id AND poll_options.id = votes.poll_option_id WHERE poll_options.poll_id = #{self.id.to_i} GROUP BY users.id")
