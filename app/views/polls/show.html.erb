@@ -12,8 +12,23 @@
   </div>
   
   <ul class="unstyled" id="poll-options">
+
+      <li style="padding: 4px;" id="temp-li" class="hidden">
+        <span class="num" id="data-span" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
+          0
+        </span>
+        <span id="vote-span" class="btn vote-button">Vote</span>
+        <span id="unvote-span" class="btn disabled unvote-button">-</span>
+        <span class="description"></span>
+      </li>
+
+
+    <% if @poll.poll_options.empty? %>
+      <li id="empty-li"><em>No poll options yet. Add one.</em></li>
+    <% end %>
+
     <% @poll.poll_options.each do |option| %>
-      <li style="padding: 4px;">
+      <li style="padding: 4px;" id="option-li-<%= option.id %>">
         <span class="num" data-id="<%= option.id %>" style="opacity: 0.0; width: 15px; position: relative; top: 3px; display: inline-block; font-weight: bold; font-size: 120%; color: #33cc33">
           0
         </span>
@@ -24,14 +39,13 @@
         </span>
       </li>
     <% end %>
-    <% if @poll.poll_options.empty? %>
-      <li><em>No poll options yet. Add one.</em></li>
-    <% end %>
+
     <li id="add-li">
       <div class="input-append">
         <input type="text" id="add-option-text" placeholder="add option"></input><button id="add-option" class="btn">Add option</button>
       </div>
     </li>
+
   </ul>
 
   <div id="vote-buttons">
@@ -171,16 +185,26 @@
     var addLi = $("#add-li");
     var addButton = $("#add-option");
     var addText = $("#add-option-text");
+    var emptyLi = $("#empty-li");
     var list = $("#poll-options");
+    var tempLi = $("#temp-li");
+
     addButton.live("click", function() {
+      emptyLi.hide();
+
       var option = addText.val();
       if (option.length !== 0) {
-        console.log("submitting");
-        $.post("<%= poll_poll_options_url(@poll) %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function() {
-          console.log("wtf");
+        $.post("<%= poll_poll_options_url(@poll) %>", {"poll_id": <%= params[:id] %>, "description": option}).done(function(data) {
           addLi.remove();
-          list.append($("<li> <em>" + option + " (refresh to vote)" + "</em> </li>"));
+
+          newLi = tempLi.clone();
+          newLi.id = "option-li-" + data.id;
+          newLi.removeClass("hidden");
+          newLi.children(".description").text(option);
+
+          list.append(newLi);
           list.append(addLi);
+
           addText.val("");
           addText.focus();
         });

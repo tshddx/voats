@@ -15,5 +15,4 @@ class VotesController < ApplicationController
     Vote.find(params[:id]).destroy
     render :json => {:success => true}
   end
-  
 end

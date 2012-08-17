@@ -5,7 +5,7 @@ class PollOptionsController < ApplicationController
     @poll_option.user = @user
     @poll_option.description = params[:description]
     if @poll_option.save
-      render :json => {:success => true}
+      render :json => {:success => true, :id => @poll_option.id }
     else
       render :json => {:error => true}
     end
